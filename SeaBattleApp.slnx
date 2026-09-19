@@ -1,0 +1,13 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="SeaBattleApp/SeaBattleApp.vcxproj">
+    <BuildDependency Project="SeaBattleLib/SeaBattleLib.vcxproj" />
+  </Project>
+  <Project Path="SeaBattleLib/SeaBattleLib.vcxproj" />
+  <Project Path="SeaBattleTests/SeaBattleTests.vcxproj">
+    <BuildDependency Project="SeaBattleLib/SeaBattleLib.vcxproj" />
+  </Project>
+</Solution>
