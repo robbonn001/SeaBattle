@@ -10,10 +10,10 @@ public:
     int shoot(const Position& pos);
 	void shipDie(const Ship& ship);
 private:
-    int grid[10][10];
+	int grid[10][10];
 };
 
-// 0-9 - индексы кораблей
-// 10 - пустая клетка
+// 0 - пустая клетка
+// 1-10 - индексы кораблей
 // 11 - промах
 // 12 - попадание
