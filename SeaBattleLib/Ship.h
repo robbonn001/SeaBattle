@@ -10,20 +10,20 @@ public:
 	Ship(int size);
 	Ship(int size, Position start, Direction dir);
 	bool hit(const Position& p);
-	void setPositions(const Position& start, const Direction& dir);
-	int getSize() {
+	void setup(const Position& start, const Direction& dir);
+	int getSize() const {
 		return size;
 	}
-	int getHits() {
+	int getHits() const {
 		return hits;
 	}
-	bool isSunk() {
+	bool isSunk() const {
 		return hits == size; 
 	}
-	Position getStart() {
+	Position getStart() const {
 		return start;
 	}
-	Direction getDirection() {
+	Direction getDirection() const {
 		return dir;
 	}
 private:

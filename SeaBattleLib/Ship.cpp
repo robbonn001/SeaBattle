@@ -1,8 +1,14 @@
 #include "Ship.h"
 
-Ship::Ship(int size): size(size), hits(0), start(Position(0, 0)), dir(Direction::UNKNOWN) {}
+Ship::Ship(int size): size(size), hits(0), start(Position(0, 0)), dir(Direction::UNKNOWN) {
+	if (size < 1 || size>4) {
+		throw std::logic_error("Неверный размер корабля");
+	}
+}
 
-Ship::Ship(int size, Position start, Direction dir) : size(size), hits(0), start(start), dir(dir) {}
+Ship::Ship(int size, Position start, Direction dir) : Ship(size) {
+	setup(start, dir);
+}
 
 bool Ship::hit(const Position& p)
 {
@@ -28,8 +34,14 @@ bool Ship::hit(const Position& p)
 	return isSunk();
 }
 
-void Ship::setPositions(const Position& start, const Direction& dir)
+void Ship::setup(const Position& start, const Direction& dir)
 {
+	if (dir == Direction::UNKNOWN) {
+		throw std::logic_error("Неопознанная ориентация корабля");
+	}
+	if (!start.isValid()) {
+		throw std::logic_error("Неверная позиция корабля");
+	}
 	this->start = start;
 	this->dir = dir;
 }
