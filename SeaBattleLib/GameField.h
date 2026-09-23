@@ -1,16 +1,17 @@
 #pragma once
+#include <iostream>
 #include "Ship.h"
 
 class GameField
 {
 public:
 	GameField();
-	void show();
-    bool placeShip(const Ship& ship);
+	void show(bool own = false);
+    bool canPlaceShip(const Ship& ship, const Position& start, const Ship::Direction& dir);
     int shoot(const Position& pos);
 	void shipDie(const Ship& ship);
 private:
-	int grid[10][10];
+	int grid[10][10]{};
 };
 
 // 0 - пустая клетка
