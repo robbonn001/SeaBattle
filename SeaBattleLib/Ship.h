@@ -4,7 +4,6 @@
 
 class Ship
 {	
-	
 public:
 	enum class Direction { UNKNOWN, HORIZONTAL, VERTICAL };
 	Ship(int size);

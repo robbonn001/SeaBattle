@@ -1,13 +1,18 @@
 #include "GameField.h"
 
-void GameField::show(bool own)
+void GameField::show(bool own) const
 {
 	char c;
+	for (int i = 0;i < 10;i++) {
+		std::cout << " " << i + 1;
+	}
+	std::cout << '\n';
 	for (int i = 0; i < 10; i++) {
+		std::cout << static_cast<char>('a' + i) << " ";
 		for (int j = 0; j < 10; j++) {
 			switch (grid[i][j]) {
 			case 0:
-				c = ' '; // пустая клетка
+				c = '.'; // пустая клетка
 				break;
 			case 11:
 				c = 'O'; // промах
@@ -20,45 +25,83 @@ void GameField::show(bool own)
 			}
 			std::cout << c << " ";
 		}
-		std::cout << std::endl;
+		std::cout << '\n';
 	}
 }
 
-bool GameField::canPlaceShip(const Ship& ship, const Position& start, const Ship::Direction& dir)
+bool GameField::canPlaceShip(const Ship& ship) const
 {
 	int size = ship.getSize();
+	Ship::Direction dir = ship.getDirection();
+	Position start = ship.getStart();
 	Position cur = start;
 	if (dir == Ship::Direction::HORIZONTAL) {
 		for (int i = 0;i < size;++i) {
-			cur.x += i;
-			if ((!cur.isValid() || grid[cur.x][cur.y] != 0) || (cur.y > 0 && grid[cur.x][cur.y - 1] != 0) || (cur.y < 9 && grid[cur.x][cur.y + 1] != 0)) {
-				return false;
+			if (!cur.isValid() || grid[cur.y][cur.x] != 0) {
+				return false; // проверка для клеток корабля
 			}
+			++cur.x;
 		}
-		++cur.x;
-		if ((cur.isValid() && grid[cur.x][cur.y] != 0) || (cur.y > 0 && grid[cur.x][cur.y - 1] != 0) || (cur.y < 9 && grid[cur.x][cur.y + 1] != 0)) {
-			return false;
-		}
+		// проверка для клеток вокруг корабля
 		cur = start;
 		--cur.x;
-		if ((cur.isValid() && grid[cur.x][cur.y] != 0) || (cur.y > 0 && grid[cur.x][cur.y - 1] != 0) || (cur.y < 9 && grid[cur.x][cur.y + 1] != 0)) {
+		--cur.y;
+		for (int i = 0;i < size + 2;++i) {
+			if (cur.isValid() && grid[cur.y][cur.x] != 0) {
+				return false;
+			}
+			++cur.x;
+		}
+		--cur.x;
+		++cur.y;
+		if (cur.isValid() && grid[cur.y][cur.x] != 0) {
+			return false;
+		}
+		++cur.y;
+		for (int i = 0;i < size + 2;++i) {
+			if (cur.isValid() && grid[cur.y][cur.x] != 0) {
+				return false;
+			}
+			--cur.x;
+		}
+		++cur.x;
+		--cur.y;
+		if (cur.isValid() && grid[cur.y][cur.x] != 0) {
 			return false;
 		}
 	}
 	else if (dir == Ship::Direction::VERTICAL) {
-		for (int i = 0;i < size;i++) {
-			cur.y += i;
-			if ((!cur.isValid() || grid[cur.x][cur.y] != 0) || (cur.x > 0 && grid[cur.x - 1][cur.y] != 0) || (cur.x < 9 && grid[cur.x + 1][cur.y] != 0)) {
+		for (int i = 0;i < size;++i) {
+			if (!cur.isValid() || grid[cur.y][cur.x] != 0) {
+				return false; // проверка для клеток корабля
+			}
+			++cur.y;
+		}
+		// проверка для клеток вокруг корабля
+		cur = start;
+		++cur.x;
+		--cur.y;
+		for (int i = 0;i < size + 2;++i) {
+			if (cur.isValid() && grid[cur.y][cur.x] != 0) {
 				return false;
 			}
+			++cur.y;
 		}
-		++cur.y;
-		if ((cur.isValid() && grid[cur.x][cur.y] != 0) || (cur.y > 0 && grid[cur.x - 1][cur.y] != 0) || (cur.y < 9 && grid[cur.x + 1][cur.y] != 0)) {
+		--cur.y;
+		--cur.x;
+		if (cur.isValid() && grid[cur.y][cur.x] != 0) {
 			return false;
 		}
-		cur = start;
-		--cur.y;
-		if ((cur.isValid() && grid[cur.x][cur.y] != 0) || (cur.y > 0 && grid[cur.x - 1][cur.y] != 0) || (cur.y < 9 && grid[cur.x + 1][cur.y] != 0)) {
+		--cur.x;
+		for (int i = 0;i < size + 2;++i) {
+			if (cur.isValid() && grid[cur.y][cur.x] != 0) {
+				return false;
+			}
+			--cur.y;
+		}
+		++cur.y;
+		++cur.x;
+		if (cur.isValid() && grid[cur.y][cur.x] != 0) {
 			return false;
 		}
 	}
@@ -68,19 +111,40 @@ bool GameField::canPlaceShip(const Ship& ship, const Position& start, const Ship
 	return true;
 }
 
+void GameField::placeShip(int id, const Ship& ship)
+{
+	int size = ship.getSize();
+	Ship::Direction dir = ship.getDirection();
+	Position start = ship.getStart();
+	int* iter = nullptr;
+	if (dir == Ship::Direction::HORIZONTAL) {
+		iter = &start.x;
+	}
+	else if (dir == Ship::Direction::VERTICAL) {
+		iter = &start.y;
+	}
+	else {
+		throw std::logic_error("Неопознанная ориентация корабля");
+	}
+	for (int i = 0;i < size;++i) {
+		grid[start.y][start.x] = id;
+		++(*iter);
+	}
+}
+
 int GameField::shoot(const Position& pos)
 {
-	int val = grid[pos.x][pos.y];
+	int val = grid[pos.y][pos.x];
 	switch (val) {
 	case 0:
-		grid[pos.x][pos.y] = 11; // промах
+		grid[pos.y][pos.x] = 11; // промах
 		break;
 	case 11:
 		break; // уже был промах
 	case 12:
 		break; // уже было попадание
 	default:
-		grid[pos.x][pos.y] = 12; // попадание
+		grid[pos.y][pos.x] = 12; // попадание
 	}
 	return val; // возвращаем значение клетки до выстрела(индекс корабля или другое)
 }
@@ -93,14 +157,58 @@ void GameField::shipDie(const Ship& ship)
 	if (dir == Ship::Direction::HORIZONTAL) {
 		--cur.x;
 		--cur.y;
-		for (int j = 0;j < 3;++j) {
-			cur.y += j;
-			for (int i = 0;i < size + 2;++i) {
-				cur.x += i;
-				if (cur.isValid()) {
-					grid[cur.x][cur.y] = 12; // помечаем как подбитую
-				}
+		for (int i = 0;i < size + 2;++i) {
+			if (cur.isValid() && grid[cur.y][cur.x] == 0) {
+				grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
 			}
+			++cur.x;
 		}
+		--cur.x;
+		++cur.y;
+		if (cur.isValid() && grid[cur.y][cur.x] == 0) {
+			grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+		}
+		++cur.y;
+		for (int i = 0;i < size + 2;++i) {
+			if (cur.isValid() && grid[cur.y][cur.x] == 0) {
+				grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+			}
+			--cur.x;
+		}
+		++cur.x;
+		--cur.y;
+		if (cur.isValid() && grid[cur.y][cur.x] == 0) {
+			grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+		}
+	}
+	else if (dir == Ship::Direction::VERTICAL) {
+		++cur.x;
+		--cur.y;
+		for (int i = 0;i < size + 2;++i) {
+			if (cur.isValid() && grid[cur.y][cur.x] == 0) {
+				grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+			}
+			++cur.y;
+		}
+		--cur.y;
+		--cur.x;
+		if (cur.isValid() && grid[cur.y][cur.x] == 0) {
+			grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+		}
+		--cur.x;
+		for (int i = 0;i < size + 2;++i) {
+			if (cur.isValid() && grid[cur.y][cur.x] == 0) {
+				grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+			}
+			--cur.y;
+		}
+		++cur.y;
+		++cur.x;
+		if (cur.isValid() && grid[cur.y][cur.x] == 0) {
+			grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+		}
+	}
+	else {
+		throw std::logic_error("Неопознанная ориентация корабля");
 	}
 }
