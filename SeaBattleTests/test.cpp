@@ -150,3 +150,24 @@ TEST(GameFieldTest, ShipDieSurrounding) {
 	EXPECT_EQ(field.getCellState(Position(6, 5)), 11);
 	EXPECT_EQ(field.getCellState(Position(6, 6)), 11);
 }
+
+// Тест расстановки кораблей
+TEST(PlayerTest, RandomShipsPlacement) {
+	Player p("TestBot");
+	EXPECT_EQ(p.getName(), "TestBot");
+	p.randomShips();
+
+	// Проверяем, что все корабли расставлены (count должен быть 10)
+	EXPECT_EQ(p.getShipsCount(), 10);
+
+	// Проверяем, что на поле есть корабли (значения от 1 до 10)
+	bool hasShips = false;
+	for (int i = 0; i < 10; ++i) {
+		for (int j = 0; j < 10; ++j) {
+			if (p.getCellState(Position(i, j)) > 0 && p.getCellState(Position(i, j)) <= 10) {
+				hasShips = true;
+			}
+		}
+	}
+	EXPECT_TRUE(hasShips);
+}
