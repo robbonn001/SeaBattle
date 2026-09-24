@@ -3,11 +3,11 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="SeaBattleApp/SeaBattleApp.vcxproj">
+  <Project Path="SeaBattleApp/SeaBattleApp.vcxproj" Id="c92606c4-ca60-48f2-a4ec-c10309028b04">
     <BuildDependency Project="SeaBattleLib/SeaBattleLib.vcxproj" />
   </Project>
-  <Project Path="SeaBattleLib/SeaBattleLib.vcxproj" />
-  <Project Path="SeaBattleTests/SeaBattleTests.vcxproj">
+  <Project Path="SeaBattleLib/SeaBattleLib.vcxproj" Id="304d2d1a-a29a-4402-b322-f539ec11b4d2" />
+  <Project Path="SeaBattleTests/SeaBattleTests.vcxproj" Id="36c8e03f-cd93-4d3b-b988-cded0aeb72da">
     <BuildDependency Project="SeaBattleLib/SeaBattleLib.vcxproj" />
   </Project>
 </Solution>
