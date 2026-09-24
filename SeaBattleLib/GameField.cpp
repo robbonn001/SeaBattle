@@ -11,17 +11,17 @@ void GameField::show(bool own) const
 		std::cout << static_cast<char>('a' + i) << " ";
 		for (int j = 0; j < 10; j++) {
 			switch (grid[i][j]) {
-			case 0:
+			case static_cast<int>(CellState::EMPTY):
 				c = '.'; // пустая клетка
 				break;
-			case 11:
+			case static_cast<int>(CellState::MISS):
 				c = 'O'; // промах
 				break;
-			case 12:
+			case static_cast<int>(CellState::HIT):
 				c = '*'; // попадание
 				break;
 			default:
-				c = own ? '+' : ' '; // корабль
+				c = own ? '+' : '.'; // корабль или пустая клетка
 			}
 			std::cout << c << " ";
 		}
@@ -158,54 +158,54 @@ void GameField::shipDie(const Ship& ship)
 		--cur.x;
 		--cur.y;
 		for (int i = 0;i < size + 2;++i) {
-			if (cur.isValid() && grid[cur.y][cur.x] == 0) {
-				grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+			if (cur.isValid() && grid[cur.y][cur.x] == static_cast<int>(CellState::EMPTY)) {
+				grid[cur.y][cur.x] = static_cast<int>(CellState::MISS); // помечаем как промах вокруг потопленного корабля
 			}
 			++cur.x;
 		}
 		--cur.x;
 		++cur.y;
-		if (cur.isValid() && grid[cur.y][cur.x] == 0) {
-			grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+		if (cur.isValid() && grid[cur.y][cur.x] == static_cast<int>(CellState::EMPTY)) {
+			grid[cur.y][cur.x] = static_cast<int>(CellState::MISS); // помечаем как промах вокруг потопленного корабля
 		}
 		++cur.y;
 		for (int i = 0;i < size + 2;++i) {
-			if (cur.isValid() && grid[cur.y][cur.x] == 0) {
-				grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+			if (cur.isValid() && grid[cur.y][cur.x] == static_cast<int>(CellState::EMPTY)) {
+				grid[cur.y][cur.x] = static_cast<int>(CellState::MISS); // помечаем как промах вокруг потопленного корабля
 			}
 			--cur.x;
 		}
 		++cur.x;
 		--cur.y;
-		if (cur.isValid() && grid[cur.y][cur.x] == 0) {
-			grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+		if (cur.isValid() && grid[cur.y][cur.x] == static_cast<int>(CellState::EMPTY)) {
+			grid[cur.y][cur.x] = static_cast<int>(CellState::MISS); // помечаем как промах вокруг потопленного корабля
 		}
 	}
 	else if (dir == Ship::Direction::VERTICAL) {
 		++cur.x;
 		--cur.y;
 		for (int i = 0;i < size + 2;++i) {
-			if (cur.isValid() && grid[cur.y][cur.x] == 0) {
-				grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+			if (cur.isValid() && grid[cur.y][cur.x] == static_cast<int>(CellState::EMPTY)) {
+				grid[cur.y][cur.x] = static_cast<int>(CellState::MISS); // помечаем как промах вокруг потопленного корабля
 			}
 			++cur.y;
 		}
 		--cur.y;
 		--cur.x;
-		if (cur.isValid() && grid[cur.y][cur.x] == 0) {
-			grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+		if (cur.isValid() && grid[cur.y][cur.x] == static_cast<int>(CellState::EMPTY)) {
+			grid[cur.y][cur.x] = static_cast<int>(CellState::MISS); // помечаем как промах вокруг потопленного корабля
 		}
 		--cur.x;
 		for (int i = 0;i < size + 2;++i) {
-			if (cur.isValid() && grid[cur.y][cur.x] == 0) {
-				grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+			if (cur.isValid() && grid[cur.y][cur.x] == static_cast<int>(CellState::EMPTY)) {
+				grid[cur.y][cur.x] = static_cast<int>(CellState::MISS); // помечаем как промах вокруг потопленного корабля
 			}
 			--cur.y;
 		}
 		++cur.y;
 		++cur.x;
-		if (cur.isValid() && grid[cur.y][cur.x] == 0) {
-			grid[cur.y][cur.x] = 11; // помечаем как промах вокруг потопленного корабля
+		if (cur.isValid() && grid[cur.y][cur.x] == static_cast<int>(CellState::EMPTY)) {
+			grid[cur.y][cur.x] = static_cast<int>(CellState::MISS); // помечаем как промах вокруг потопленного корабля
 		}
 	}
 	else {

@@ -5,6 +5,7 @@
 class GameField
 {
 public:
+	enum class CellState { EMPTY = 0, MISS = 11, HIT = 12 };
 	void show(bool own = false) const;
     bool canPlaceShip(const Ship& ship) const;
 	void placeShip(int id, const Ship& ship);
